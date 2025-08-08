@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>꼬의 명가 - 회원가입 & 로그인</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background-color: #f3f3e9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      width: 100%;
+      max-width: 400px;
+      background: white;
+      padding: 2em;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 1em;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #6b8e23;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 1em;
+    }
+    .toggle {
+      text-align: center;
+      margin-top: 1em;
+      cursor: pointer;
+      color: #6b8e23;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="authBox">
+    <h2 id="formTitle">회원가입</h2>
+    <form id="authForm">
+      <input type="text" id="nameField" placeholder="이름" required />
+      <input type="email" id="email" placeholder="이메일" required />
+      <input type="password" id="password" placeholder="비밀번호" required />
+      <input type="password" id="confirmPassword" placeholder="비밀번호 확인" required />
+      <button type="submit">회원가입</button>
+    </form>
+    <div class="toggle" onclick="toggleForm()">로그인 하기</div>
+  </div>
+
+  <script>
+    const form = document.getElementById("authForm");
+    const nameField = document.getElementById("nameField");
+    const email = document.getElementById("email");
+    const password = document.getElementById("password");
+    const confirmPassword = document.getElementById("confirmPassword");
+    const formTitle = document.getElementById("formTitle");
+    const toggleBtn = document.querySelector(".toggle");
+    const authBox = document.getElementById("authBox");
+
+    let isLogin = false;
+
+    toggleForm(); // default to login mode
+
+    function toggleForm() {
+      isLogin = !isLogin;
+      if (isLogin) {
+        formTitle.textContent = "로그인";
+        nameField.style.display = "none";
+        confirmPassword.style.display = "none";
+        form.querySelector("button").textContent = "로그인";
+        toggleBtn.textContent = "회원가입 하기";
+      } else {
+        formTitle.textContent = "회원가입";
+        nameField.style.display = "block";
+        confirmPassword.style.display = "block";
+        form.querySelector("button").textContent = "회원가입";
+        toggleBtn.textContent = "로그인 하기";
+      }
+    }
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      if (!isLogin) {
+        // signup
+        if (password.value !== confirmPassword.value) {
+          confirmPassword.setCustomValidity("비밀번호가 다릅니다.");
+          confirmPassword.reportValidity();
+          return;
+        }
+        localStorage.setItem("userName", nameField.value);
+        localStorage.setItem("userEmail", email.value);
+        localStorage.setItem("userPassword", password.value);
+        toggleForm();
+      } else {
+        // login
+        const storedEmail = localStorage.getItem("userEmail");
+        const storedPassword = localStorage.getItem("userPassword");
+        if (email.value === storedEmail && password.value === storedPassword) {
+          window.location.href = "home.html";
+        } else {
+          password.setCustomValidity("이메일 또는 비밀번호가 다릅니다.");
+          password.reportValidity();
+        }
+      }
+    });
+  </script>
+</body>
+</html>
